@@ -1,10 +1,7 @@
 name: Android CI
 
 on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -20,8 +17,15 @@ jobs:
 
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
-
+      
     - name: Build apk
-      uses: gradle/actions/setup-gradle@v3
+      run: ./gradlew assembleDebug
+
+    - name: Build artifacts
+      uses: actions/upload-artifact@v4
       with:
-        arguments: build
+        name: osu_debug
+        path: build/outputs/apk/debug/*.apk
+        if-no-files-found: error
+        compression-level: 9
+        retention-days: 30
