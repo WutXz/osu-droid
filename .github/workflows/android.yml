@@ -1,10 +1,7 @@
 name: Android CI
 
 on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -22,6 +19,14 @@ jobs:
       run: chmod +x gradlew
 
     - name: Build apk
-      uses: gradle/actions/setup-gradle@v3
+      uses: gradle/actions/setup-gradle@v4
       with:
         arguments: build
+
+    - name: Build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: osu_debug
+        path: build/outputs/apk/debug/*.apk
+        if-no-files-found: error
+        compression-level: 9
